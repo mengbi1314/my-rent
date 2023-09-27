@@ -7,8 +7,20 @@ import reportWebVitals from './reportWebVitals';
 // 引入Cookie
 import Cookies from 'react-cookies';
 
+// 引入路由
+import * as Router from 'react-router-dom';
+
+// 引入vant UI
+import * as Vant from 'react-vant';
+
+// 引入vant-icon图标库
+import * as Icon from '@react-vant/icons';
+
 // 全局挂载
 React.Cookies = Cookies;
+React.Router = Router;
+React.Vant = Vant;
+React.Icon = Icon
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
