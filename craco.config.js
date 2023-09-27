@@ -11,11 +11,11 @@ module.exports = {
     //配置代理解决跨域
     devServer: {
         proxy: {
-            "/api": {
-                target: "http://www.ask.com/api",
+            "/rent": {
+                target: "http://www.fastadmin.com/rent",
                 changeOrigin: true,
                 pathRewrite: {
-                    "^/api": ""
+                    "^/rent": ""
                 }
             }
         }

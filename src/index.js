@@ -16,11 +16,16 @@ import * as Vant from 'react-vant';
 // 引入vant-icon图标库
 import * as Icon from '@react-vant/icons';
 
+//引入api接口
+import Api from '@/api/index';
+
 // 全局挂载
 React.Cookies = Cookies;
 React.Router = Router;
 React.Vant = Vant;
-React.Icon = Icon
+React.Icon = Icon;
+React.Icon = Icon;
+React.Api = Api;
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
