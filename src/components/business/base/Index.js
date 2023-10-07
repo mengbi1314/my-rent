@@ -2,6 +2,8 @@ import React from 'react';
 
 const Index = () => {
 
+    const Navigate = React.Router.useNavigate();
+
     const [LoginBusiness, setLoginBusiness] = React.useState({});
 
     // 类似Vue里的生命周期
@@ -29,6 +31,24 @@ const Index = () => {
                 </div>
             )
         }
+    }
+    const onLogout = () => {
+        React.Vant.Dialog.confirm({
+            title: '退出账号',
+            message: '是否退出当前账号？'
+        }).then((res) => {
+            React.Cookies.remove('LoginBusiness', { path: '/' });
+
+            React.Vant.Notify.show({
+                type: 'success',
+                message: '退出成功',
+                duration: 1500,
+                onClose: () => {
+                    Navigate('/business/base/login');
+                }
+            })
+        }).catch((err) => {
+        });
     }
 
     return (
@@ -123,9 +143,9 @@ const Index = () => {
                                 </div>
                             </div>
 
-                            <div className="my_dind">
+                            <div className="my_dind" onClick={onLogout}>
                                 <div className="bt">
-                                    <a href="my_fk.html">
+                                    <a>
                                         <h3>
                                             <img src="/assets/images/my_x_01.png" />
                                             退出账号
