@@ -4,12 +4,72 @@ const Login = () => {
 
     const [form] = React.Vant.Form.useForm();
 
+    const Navigate = React.Router.useNavigate();
+
     // 定义属性状态
     const [mobile, setMobile] = React.useState('13500000000');
     const [password, setPassword] = React.useState('123456');
 
-    const onSubmit = () => {
+    const onSubmit = async () => {
+        if (!mobile.trim()) {
+            React.Vant.Notify.show({
+                type: 'warning',
+                message: '请输入手机号',
+                duration: 1500
+            });
 
+            return;
+        }
+
+        let mobileReg = new RegExp(/^1[3,4,5,6,7,8,9][0-9]{9}$/);
+
+        if (!mobileReg.test(mobile.trim())) {
+            React.Vant.Notify.show({
+                type: 'warning',
+                message: '手机号格式错误',
+                duration: 1500
+            });
+
+            return;
+        }
+
+        if (!password.trim()) {
+            React.Vant.Notify.show({
+                type: 'warning',
+                message: '请输入密码',
+                duration: 1500
+            });
+
+            return;
+        }
+
+        let data = {
+            mobile,
+            password
+        }
+
+        let result = await React.Api.Login(data);
+
+        if (result.code === 0) {
+            React.Vant.Notify.show({
+                type: 'warning',
+                message: result.msg,
+                duration: 1500
+            });
+
+            return;
+        } else {
+            React.Vant.Notify.show({
+                type: 'success',
+                message: result.msg,
+                duration: 1500,
+                onClose: () => {
+                    React.Cookies.save('LoginBusiness', result.data, { path: '/' });
+
+                    Navigate('/business/base/index');
+                }
+            });
+        }
     }
 
     return (

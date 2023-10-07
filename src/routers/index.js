@@ -28,7 +28,6 @@ ModulesFile.keys().reduce((modules, modulePath) => {
     return RouterMap;
 }, {});
 
-console.log(RouterMap);
 
 const RouterList = () => {
     return (
