@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Footer from '../../common/Footer';
+
 const Index = () => {
 
     const Navigate = React.Router.useNavigate();
@@ -162,7 +164,11 @@ const Index = () => {
                 </div>
             </div>
 
-            <div style={{ height: ".75rem" }}></div>
+            <div style={{ height: ".75rem" }}>
+
+                {/* 引入底部导航 */}
+                <Footer />
+            </div>
         </>
     );
 }

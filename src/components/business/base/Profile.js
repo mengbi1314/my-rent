@@ -16,16 +16,83 @@ const Profile = () => {
     }, []);
 
     // 修改资料
-    const onProfile = async () => {
+    const onProfile = async (values) => {
+        let data = {
+            id: LoginBusiness.id,
+            nickname: values.nickname,
+            email: values.email,
+            gender: LoginBusiness.gender,
+        }
 
+        let code = LoginBusiness.district || LoginBusiness.city || LoginBusiness.province;
+
+        if (code) {
+            data.code = code;
+        }
+
+        if (values.password) {
+            data.password = values.password;
+        }
+
+        let avatar = values.avatar[0]?.file;
+
+        if (avatar) {
+            data.avatar = avatar;
+        }
+
+        let result = await React.Api.Profile(data);
+
+        if (result.code === 1) {
+            React.Vant.Notify.show({
+                type: 'success',
+                message: result.msg,
+                duration: 1500,
+                onClose: () => {
+                    React.Cookies.save('LoginBusiness', result.data, { path: '/' });
+
+                    Navigate(-1);
+                }
+            });
+            return;
+        } else {
+            React.Vant.Notity.show({
+                type: 'warning',
+                message: result.msg,
+                duration: 1500
+            });
+            return;
+        }
     }
 
     // 处理地区数据
     const [RegionShow, setRegionShow] = React.useState(false);
-    const [code, setCode] = React.useState('');
+    const [code, setCode] = React.useState([
+        LoginBusiness.province,
+        LoginBusiness.city,
+        LoginBusiness.district
+    ]);
 
-    const RegionConfirm = () => {
+    const RegionConfirm = (_, values) => {
+        let [province, city, district] = values;
 
+        if (!province || !city || !district) {
+            return;
+        }
+
+        setRegionShow(false);
+
+        let region_code = [];
+
+        LoginBusiness.region_text = province.text + '-' + city.text + '-' + district.text;
+
+        LoginBusiness.province = province.value;
+        LoginBusiness.city = city.value;
+        LoginBusiness.district = district.value;
+
+        region_code.push(province.value, city.value, district.value);
+
+        setLoginBusiness(LoginBusiness);
+        setCode(region_code);
     }
 
     // 处理性别的数据
@@ -36,8 +103,17 @@ const Profile = () => {
         { text: '女', value: 2 }
     ]);
 
-    const GenderConfirm = () => {
+    const GenderConfirm = (_, values) => {
+        values = values ? values : {};
 
+        if (!values || JSON.stringify(values) === '{}') {
+            return;
+        }
+
+        setGenderShow(false);
+
+        LoginBusiness.gender_text = values.text;
+        LoginBusiness.gender = values.value;
     }
 
     // 头像
