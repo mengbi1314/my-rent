@@ -4,7 +4,7 @@ import Footer from './common/Footer';
 const Home = () => {
     return (
         <>
-            <React.Vant.Sticky>
+            <React.Vant.Sticky zIndx={10}>
                 <React.Vant.NavBar
                     title="首页"
                     leftArrow={false}

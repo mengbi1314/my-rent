@@ -102,15 +102,15 @@ const Index = () => {
                             </div>
                             <div className="my_dind">
                                 <div className="bt">
-                                    <a href="my_fk.html">
+                                    <React.Router.NavLink to={'/business/base/profile'}>
                                         <h3>
-                                            <img src="/assets/images/my_x_01.png" />
+                                            <img src={"/assets/images/my_x_01.png"} />
                                             修改资料
                                         </h3>
                                         <div className="right">
                                             <img src="/assets/images/right_jiant.png" />
                                         </div>
-                                    </a>
+                                    </React.Router.NavLink>
                                 </div>
                             </div>
 
