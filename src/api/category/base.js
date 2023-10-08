@@ -7,6 +7,12 @@ const base = {
             url: '/category/index',
             params: data
         });
+    },
+    CategoryRecommend(data = {}) {
+        return POST({
+            url: '/category/recommend',
+            params: data
+        });
     }
 };
 

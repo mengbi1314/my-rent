@@ -1,4 +1,5 @@
 import React from "react";
+import Footer from '../common/Footer';
 
 const Index = () => {
 
@@ -10,6 +11,8 @@ const Index = () => {
 
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
+
+    const [recommend, setRecommend] = React.useState([]);
 
     const onRefresh = () => {
         setFinished(false);
@@ -61,6 +64,7 @@ const Index = () => {
 
     }
 
+    // 列表
     const Items = () => {
         if (CateList.length > 0) {
             return CateList.map(item => {
@@ -77,9 +81,37 @@ const Index = () => {
         }
     }
 
+    // 轮播
     const CategorySwiper = () => {
 
+        if (recommend.length > 0) {
+            return (
+                <React.Vant.Swiper>
+                    {recommend.map(item => {
+                        return (
+                            <React.Vant.Swiper.Item key={item.id}>
+                                <React.Vant.Image lazyload src={item.image_cdn} />
+                            </React.Vant.Swiper.Item>
+                        )
+                    })}
+                </React.Vant.Swiper>
+            )
+        }
     }
+
+    // 请求轮播的数据
+    const getRecommendData = async () => {
+        let result = await React.Api.CategoryRecommend();
+
+        if (result) {
+            if (result.code === 1) {
+                setRecommend(result.data);
+            }
+        }
+    }
+    React.useEffect(() => {
+        getRecommendData();
+    }, []);
 
     // 菜单
     const onMenu = () => {
@@ -116,8 +148,10 @@ const Index = () => {
                     </div>
                 </React.Vant.List>
             </React.Vant.PullRefresh>
+            <Footer />
         </>
     )
+
 }
 
 export default Index;
