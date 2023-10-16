@@ -13,6 +13,12 @@ const base = {
             url: '/category/recommend',
             params: data
         });
+    },
+    CategoryInfo(data = {}) {
+        return POST({
+            url: '/category/info',
+            params: data
+        });
     }
 };
 
