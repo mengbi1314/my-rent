@@ -19,7 +19,14 @@ const base = {
             url: '/category/info',
             params: data
         });
+    },
+    CategoryCollection(data = {}) {
+        return POST({
+            url: '/category/collection',
+            params: data
+        });
     }
+
 };
 
 export default base;

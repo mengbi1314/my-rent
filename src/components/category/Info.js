@@ -73,6 +73,34 @@ const Info = () => {
         }
     }
 
+    // 点击收藏
+    const onCollection = async () => {
+        /* 
+    用户id
+    文章id
+*/
+
+        // 判断用户在文章详情里是否处于登录状态
+        if (JSON.stringify(LoginBusiness) === '{}' || !LoginBusiness) {
+            React.Vant.Toast.fail('请先登录');
+            return;
+        }
+
+        // 封装数据
+        let data = {
+            busid: LoginBusiness.id,
+            cateid: id
+        }
+
+        let result = await React.Api.CategoryCollection(data);
+
+        if (result.code === 0) {
+            React.Vant.Toast.fail(result.msg);
+            return;
+        }
+        getInfo();
+    }
+
     React.useEffect(() => {
         getInfo();
     }, [id])
@@ -106,7 +134,7 @@ const Info = () => {
 
                 </div>
                 <div className="niming_sq niming_sq_xs_xq">
-                    <a>
+                    <a onClick={onCollection}>
 
                         {info.collection_status === true ? <React.Icon.Star /> : <React.Icon.StarO />}
                         {info.collection_status === true ? '已收藏' : '收藏'}

@@ -76,10 +76,10 @@ const Home = () => {
             <div className="shouye_kuanj">
                 <div className="swiper-wrapper" style={{ display: 'flex' }}>
                     <div className="swiper-slide" style={{ width: '25%' }}>
-                        <a href="list_zl.html">
+                        <React.Router.NavLink to={'/product/lease/add'}>
                             <img src="/assets/images/kj.png" alt="" />
                             <p>产品租赁</p>
-                        </a>
+                        </React.Router.NavLink>
                     </div>
                     <div className="swiper-slide" style={{ width: '25%' }}>
                         <a href="hsb.html">
