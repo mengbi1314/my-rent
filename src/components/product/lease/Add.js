@@ -23,8 +23,48 @@ const Add = () => {
     const [card, setCard] = React.useState([]);
 
     // 提交
-    const onAdd = () => {
+    const onAdd = async (values) => {
+        // 判断租赁天数大于等于10天
+        if (day < 10) {
+            React.Vant.Toast.fail('租赁天数必须大于等于10天');
+            return;
+        }
 
+        let StartTime = Math.floor(start / 1000);
+        let EndTime = Math.floor(end.getTime() / 1000);
+
+        // 封装数据
+        let data = {
+            busid: LoginBusiness.id,
+            proid: product.id,
+            address: values.address,
+            mobile: values.mobile,
+            nickname: values.nickname,
+            code: LoginBusiness.district || LoginBusiness.city || LoginBusiness.province,
+            createtime: StartTime,
+            endtime: EndTime,
+            card: values.card[0].file,
+            price: rent,// 包含押金的金额
+            rent: product.rent,// 只是押金
+        }
+
+        let result = await React.Api.LeaseAdd(data);
+
+        if (result.code === 1) {
+            React.Vant.Toast.success({
+                message: result.msg,
+                onClose: () => {
+                    React.Cookies.remove('product');
+
+                    Navigate('/product/order/index');
+                }
+            });
+
+            return;
+        } else {
+            React.Vant.Toast.fail(result.msg);
+            return;
+        }
     }
 
     // 地区选择
@@ -64,9 +104,11 @@ const Add = () => {
 
         let time = values.getTime();
 
-        SetDay(Math.ceil((time - start) / (24 * 60 * 60 * 1000)))
+        SetDay(Math.ceil((time - start) / (24 * 60 * 60 * 1000)));
 
-        setEndTime(`${values.getFullYear()}-${values.getMonth() + 1}-${values.getDate()}`)
+        setEndTime(`${values.getFullYear()}-${values.getMonth() + 1}-${values.getDate()}`);
+
+        SetEnd(new Date(time));
     }
 
     // 押金以及租金
@@ -79,7 +121,9 @@ const Add = () => {
 
         rent_price = rent_price * day;
 
-        let rent = rent_price + parseFloat(product.rent);
+        let rent = product.rent ? parseFloat(product.rent) : 0;
+
+        rent = rent_price + rent;
 
         setPrice(rent_price.toFixed(2));
         setRent(rent.toFixed(2));
@@ -96,6 +140,7 @@ const Add = () => {
     }
 
     const onBack = () => {
+        React.Cookies.remove('product', { path: '/' });
         Navigate(-1);
     }
 
