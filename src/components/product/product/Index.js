@@ -11,11 +11,21 @@ const Index = () => {
     const ProductData = React.useRef([]);
     const [page, setPage] = React.useState(1);
     const [limit, setLimit] = React.useState(10);
-    const [action, setAction] = React.useState(searchParams.get('acton') ? searchParams.get('action') : '');
+    const [action, setAction] = React.useState(searchParams.get('action') ? searchParams.get('action') : '');
 
     // 下拉刷新
     const onRefresh = () => {
-
+        setFinished(false);
+        setList([]);
+        setPage(1);
+        ProductData.current = [];
+        return new Promise((resolve) => {
+            setTimeout(() => {
+                React.Vant.Toast.info('刷新成功');
+                getProductData();
+                resolve(true);
+            }, 1500);
+        });
     }
 
     // 上拉加载
@@ -31,6 +41,50 @@ const Index = () => {
         }
 
         let result = await React.Api.ProductIndex(data);
+
+        if (result) {
+            if (result.code === 0) {
+                React.Vant.Toast.fail(result.msg);
+                return;
+            }
+
+            let count = result.data.count;
+            ProductData.current = ProductData.current.concat(result.data.list);
+            setList(ProductData.current);
+
+            if (ProductData.current.length === count) {
+                setFinished(true);
+                return;
+            }
+
+            setPage(page + 1);
+            setFinished(false);
+        }
+
+    }
+
+    const selected = (item) => {
+        React.Cookies.save('product', item, { path: '/' });
+
+        Navigate(-1);
+    }
+
+    const Items = () => {
+        if (action === 'lease') {
+            if (list.length > 0) {
+                return list.map(item => {
+                    return (
+                        <li key={item.id}>
+                            <a onClick={() => selected(item)}>
+                                <img src={item.thumb_cdn} alt="" />
+                                <p>{item.name}</p>
+                                <span>￥ {item.rent_price}</span>
+                            </a>
+                        </li>
+                    )
+                })
+            }
+        }
     }
 
     const onBack = () => {
@@ -57,13 +111,7 @@ const Index = () => {
                 <React.Vant.List finished={finished} onLoad={onLoadRefresh}>
                     <div className="left_kuangs">
                         <ul>
-                            <li>
-                                <a href="list_xq.html">
-                                    <img src="images/canp_1.jpg" alt="" />
-                                    <p>人生最宝贵的是健康家庭最宝贵的是和睦人生最宝贵的是健康家庭最宝贵的是和睦</p>
-                                    <span>￥1000 <em>.00</em></span>
-                                </a>
-                            </li>
+                            <Items />
                         </ul>
                     </div>
                 </React.Vant.List>

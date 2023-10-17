@@ -10,10 +10,14 @@ const Add = () => {
     const [form] = React.Vant.Form.useForm();
 
     // 定义
-    const [product, setProduct] = React.useState({});
+    const [product, setProduct] = React.useState(React.Cookies.load('product') ? React.Cookies.load('product') : {});
     const [LoginBusiness, setLoginBusiness] = React.useState(React.Cookies.load('LoginBusiness') ? React.Cookies.load('LoginBusiness') : {});
     const [RegionShow, setRegionShow] = React.useState(false);
-    const [code, setCode] = React.useState([]);
+    const [code, setCode] = React.useState([
+        LoginBusiness.province,
+        LoginBusiness.city,
+        LoginBusiness.district
+    ]);
 
     // 上传证件
     const [card, setCard] = React.useState([]);
@@ -23,8 +27,23 @@ const Add = () => {
 
     }
 
-    const RegionConfirm = () => {
+    // 地区选择
+    const RegionConfirm = (_, values) => {
+        let [province, city, district] = values;
 
+        if (!province || !city || !district) {
+            return;
+        }
+
+        setRegionShow(false);
+
+        LoginBusiness.province = province.value;
+        LoginBusiness.city = city.value;
+        LoginBusiness.district = district.value;
+
+        LoginBusiness.region_text = province.text + '-' + city.text + '-' + district.text;
+
+        setLoginBusiness(LoginBusiness);
     }
 
     // 选择时间
@@ -34,13 +53,42 @@ const Add = () => {
     const [day, SetDay] = React.useState(10)
     const [endTime, setEndTime] = React.useState(`${end.getFullYear()}-${end.getMonth() + 1}-${end.getDate()}`);
 
-    const DateConfirm = () => {
+    const DateConfirm = (values) => {
+        // 获取开始时间的时分秒
+        let H = new Date(start).getHours();
+        let I = new Date(start).getMinutes();
+        let S = new Date(start).getSeconds();
 
+        // 设置结束时间的时分秒
+        values.setHours(H, I, S);
+
+        let time = values.getTime();
+
+        SetDay(Math.ceil((time - start) / (24 * 60 * 60 * 1000)))
+
+        setEndTime(`${values.getFullYear()}-${values.getMonth() + 1}-${values.getDate()}`)
     }
 
     // 押金以及租金
     const [price, setPrice] = React.useState(0);
     const [rent, setRent] = React.useState(0);
+
+    const getTotal = () => {
+
+        let rent_price = product.rent_price ? parseFloat(product.rent_price) : 0;
+
+        rent_price = rent_price * day;
+
+        let rent = rent_price + parseFloat(product.rent);
+
+        setPrice(rent_price.toFixed(2));
+        setRent(rent.toFixed(2));
+
+    }
+
+    React.useEffect(() => {
+        getTotal();
+    }, [day]);
 
     // 从表单这里去到商品列表选择需要租赁商品
     const SelectProduct = () => {
