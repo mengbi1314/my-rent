@@ -54,7 +54,7 @@ const Add = () => {
             React.Vant.Toast.success({
                 message: result.msg,
                 onClose: () => {
-                    React.Cookies.remove('product');
+                    React.Cookies.remove('product', { path: '/' });
 
                     Navigate('/product/order/index');
                 }

@@ -19,6 +19,12 @@ const base = {
             url: '/business/base/profile',
             params: data
         });
+    },
+    Count(data = {}) {
+        return POST({
+            url: '/business/base/count',
+            params: data
+        });
     }
 };
 
